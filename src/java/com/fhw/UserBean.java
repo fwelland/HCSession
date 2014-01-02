@@ -1,15 +1,11 @@
 package com.fhw;
 
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
 
-@Named
-@SessionScoped
 public class UserBean 
     implements Serializable
 {
+    private static final long serialVersionUID = -4705648524130750355L;
     private String loginName;
     private String motd;
 
@@ -18,7 +14,6 @@ public class UserBean
         
     }
 
-    @PostConstruct
     private void init()
     {
         System.err.println("UserBean being post constructed..."); 
