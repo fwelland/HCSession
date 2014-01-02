@@ -2,4 +2,18 @@
 <hazelcast-client xmlns="http://www.hazelcast.com/schema/client-config" 
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                   xsi:schemaLocation="http://www.hazelcast.com/schema/client-config hazelcast-client-config-3.1.xsd">
+
+
+    <group>
+        <name>dev</name>
+        <password>dev-pass</password>
+    </group>
+
+
+    <network>
+        <cluster-members>
+            <address>127.0.0.1</address>
+        </cluster-members>
+    </network>
+
 </hazelcast-client>
