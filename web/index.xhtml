@@ -46,6 +46,8 @@
                             <p:outputLabel value="Current login name" for="currLoginNameDisplay" />
                             <h:outputText id="currLoginNameDisplay" value="${userBean.loginName}" />
                             
+                            <p:commandButton action="${loginController.startSession()}" value="Start Session" />
+                            <p:commandButton action="${loginController.startSession()}" value="End Session" /> 
                         </p:panelGrid>
 
                     </h:form>
