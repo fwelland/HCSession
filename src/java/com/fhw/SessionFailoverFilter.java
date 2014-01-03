@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.UUID;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.Cookie;
 
 @WebFilter(filterName = "SessionFailoverFilter", urlPatterns =
 {
@@ -230,6 +232,74 @@ public class SessionFailoverFilter implements Filter
         filterConfig.getServletContext().log(msg);
     }
 
+    
+    private static synchronized String generateSessionId()
+    {
+        final String id = UUID.randomUUID().toString(); 
+        final StringBuilder sb = new StringBuilder("BAP");
+        final char[] chars = id.toCharArray();
+        for (final char c : chars)
+        {
+            if (c != '-')
+            {
+                if (Character.isLetter(c))
+                {
+                    sb.append(Character.toUpperCase(c));
+                }
+                else
+                {
+                    sb.append(c);
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+    private void addSessionCookie(final ServletRequest req, final String sessionId)
+    {
+        final Cookie sessionCookie = new Cookie(sessionCookieName, sessionId);
+        String path = req.getContextPath();
+        if ("".equals(path))
+        {
+            path = "/";
+        }
+        sessionCookie.setPath(path);
+        sessionCookie.setMaxAge(-1);
+        if (sessionCookieDomain != null)
+        {
+            sessionCookie.setDomain(sessionCookieDomain);
+        }
+        try
+        {
+            sessionCookie.setHttpOnly(sessionCookieHttpOnly);
+        }
+        catch (NoSuchMethodError e)
+        {
+            // must be servlet spec before 3.0, don't worry about it!
+        }
+        sessionCookie.setSecure(sessionCookieSecure);
+        req.res.addCookie(sessionCookie);
+    }
+
+    private String getSessionCookie(final RequestWrapper req)
+    {
+        final Cookie[] cookies = req.getCookies();
+        if (cookies != null)
+        {
+            for (final Cookie cookie : cookies)
+            {
+                final String name = cookie.getName();
+                final String value = cookie.getValue();
+                if (name.equalsIgnoreCase(sessionCookieName))
+                {
+                    return value;
+                }
+            }
+        }
+        return null;
+    }    
+    
+    
 }
 
 //@SuppressWarnings("deprecation")
