@@ -8,6 +8,8 @@ import java.util.UUID;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebFilter(filterName = "SessionFailoverFilter", urlPatterns =
 {
@@ -17,12 +19,13 @@ public class SessionFailoverFilter implements Filter
 {
 
     private static final boolean debug = true;
-
+    private static final String SESSION_COOKIE_NAME = "BAPHA.sessionID"; 
+    
     private FilterConfig filterConfig = null;
     private ServletContext servletContext;
     private boolean sessionCookieSecure = false;
     private boolean sessionCookieHttpOnly = false;
-    private String cookieDomain; 
+    private String sessionCookieDomain; 
 
     public SessionFailoverFilter()
     {
@@ -85,6 +88,7 @@ public class SessionFailoverFilter implements Filter
          */
     }
 
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException
@@ -140,7 +144,7 @@ public class SessionFailoverFilter implements Filter
     {
         this.filterConfig = fConfig;
         servletContext = filterConfig.getServletContext();
-        cookieDomain = filterConfig.getInitParameter("cookie-domain");
+        sessionCookieDomain = filterConfig.getInitParameter("cookie-domain");
         String cookieSecure = filterConfig.getInitParameter("cookie-secure");
         if (cookieSecure != null)
         {
@@ -231,7 +235,6 @@ public class SessionFailoverFilter implements Filter
     {
         filterConfig.getServletContext().log(msg);
     }
-
     
     private static synchronized String generateSessionId()
     {
@@ -255,9 +258,9 @@ public class SessionFailoverFilter implements Filter
         return sb.toString();
     }
 
-    private void addSessionCookie(final ServletRequest req, final String sessionId)
+    private void addSessionCookie(final HttpServletRequest req, final String sessionId, final HttpServletResponse res)
     {
-        final Cookie sessionCookie = new Cookie(sessionCookieName, sessionId);
+        final Cookie sessionCookie = new Cookie(SESSION_COOKIE_NAME, sessionId);
         String path = req.getContextPath();
         if ("".equals(path))
         {
@@ -277,11 +280,11 @@ public class SessionFailoverFilter implements Filter
         {
             // must be servlet spec before 3.0, don't worry about it!
         }
-        sessionCookie.setSecure(sessionCookieSecure);
-        req.res.addCookie(sessionCookie);
+        sessionCookie.setSecure(sessionCookieSecure);        
+        res.addCookie(sessionCookie);
     }
 
-    private String getSessionCookie(final RequestWrapper req)
+    private String getSessionCookie(final HttpServletRequest req)
     {
         final Cookie[] cookies = req.getCookies();
         if (cookies != null)
@@ -290,7 +293,7 @@ public class SessionFailoverFilter implements Filter
             {
                 final String name = cookie.getName();
                 final String value = cookie.getValue();
-                if (name.equalsIgnoreCase(sessionCookieName))
+                if (name.equalsIgnoreCase(SESSION_COOKIE_NAME))
                 {
                     return value;
                 }
