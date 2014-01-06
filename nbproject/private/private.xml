@@ -3,7 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/fwelland/JavaStuff/NetBeansProjects/HCSession/src/java/com/fhw/SessionFailoverFilter.java</file>
+            <file>file:/home/fwelland/NetBeansProjects/HCSession/web/WEB-INF/hazelcast-client.xml</file>
+            <file>file:/home/fwelland/NetBeansProjects/HCSession/web/index.xhtml</file>
+            <file>file:/home/fwelland/NetBeansProjects/HCSession/src/java/com/fhw/LoginController.java</file>
+            <file>file:/home/fwelland/NetBeansProjects/HCSession/web/WEB-INF/web.xml</file>
         </group>
     </open-files>
 </project-private>

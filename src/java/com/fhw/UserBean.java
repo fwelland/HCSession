@@ -1,7 +1,10 @@
 package com.fhw;
 
 import java.io.Serializable;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 
+@SessionScoped
 public class UserBean 
     implements Serializable
 {
@@ -14,6 +17,7 @@ public class UserBean
         
     }
 
+    @PostConstruct
     private void init()
     {
         System.err.println("UserBean being post constructed..."); 
@@ -33,7 +37,7 @@ public class UserBean
     }
 
     public void setMotd(String motd) {
-        this.motd = motd;
-    }
+        this.motd = motd; 
+   }
     
 }
