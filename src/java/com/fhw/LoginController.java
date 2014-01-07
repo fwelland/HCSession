@@ -19,21 +19,11 @@ public class LoginController
     @PostConstruct
     private void init()
     {
-        System.err.println("post construction of LoginController");
     }
-    
-    
-    public void startSession()
-    {
-        System.err.println("startSession pressed"); 
-        
-        
-    }
-    
+           
     public void save()
     {
-        System.err.println("nothing really to do"); 
-                
+        System.err.println("LC.save:  " + userBean.toJSON()); 
     }    
     
     public String getUserJSON()

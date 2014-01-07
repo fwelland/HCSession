@@ -1,7 +1,6 @@
 package com.fhw;
 
 import com.google.gson.Gson;
-import com.sun.xml.rpc.tools.wscompile.UsageIf;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -15,6 +14,7 @@ public class UserBean
     private static final long serialVersionUID = -4705648524130750355L;
     private String loginName;
     private String motd;
+    private long touchTime; 
 
     public UserBean()
     {
@@ -24,25 +24,31 @@ public class UserBean
     @PostConstruct
     private void init()
     {
-        System.err.println("UserBean being post constructed..."); 
         loginName="default"; 
+        touchTime = System.currentTimeMillis();
     }
         
     public String getLoginName() {
         return loginName;
     }
 
-    public void setLoginName(String loginName) {
+    public void setLoginName(String loginName)
+    {
+        System.err.println("UB.setLoginName called with : " + loginName);
         this.loginName = loginName;
+        touchTime = System.currentTimeMillis();
     }
 
-    public String getMotd() {
+    public String getMotd()
+    {
         return motd;
     }
 
-    public void setMotd(String motd) {
+    public void setMotd(String motd)
+    {
         this.motd = motd; 
-   }
+        touchTime = System.currentTimeMillis();
+    }
    
     public String toJSON()
     {
@@ -52,11 +58,11 @@ public class UserBean
        return(guts);         
     }
    
-   public void updateFromJSON(String jsonString)
-   {
-       Gson gson = new Gson();
-       UserBean ub = gson.fromJson(jsonString, UserBean.class); 
-       loginName = ub.loginName;
-       motd = ub.motd; 
+    public void updateFromJSON(String jsonString)
+    {
+        Gson gson = new Gson();
+        UserBean ub = gson.fromJson(jsonString, UserBean.class); 
+        loginName = ub.loginName;
+        motd = ub.motd; 
    }
 }
